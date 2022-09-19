@@ -1,8 +1,8 @@
 import React from 'react';
 
-const App = () => {
+const App: React.FC = () => {
     return (
-        <div>
+        <div className="App">
             <h1>Dashboard App</h1>
         </div>
     );
