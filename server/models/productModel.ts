@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 export interface productInterface {
   sku: Number;
-  title: String;
-  image: String;
+  title: string;
+  image: string;
 }
 
 const productSchema = new mongoose.Schema<productInterface>({

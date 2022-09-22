@@ -1,9 +1,17 @@
 import { useState } from 'react';
 import { Container, Avatar, Button, TextField, FormControlLabel, Checkbox, Link, Grid, Box, Typography, CssBaseline } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
+import { loginFormData } from '../../app/types';
+// to consider combining login and signup components into a single component using conditional rendering
+
+const initialFormData: loginFormData = {
+    email: '',
+    password: ''
+};
 
 const Login = () => {
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const [formData, setFormData] = useState(initialFormData);
+    const handleSubmit = (event: React.ChangeEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         console.log({
@@ -11,6 +19,7 @@ const Login = () => {
             password: data.get('password')
         });
     };
+    // to add a long lasting JWT if Remember Me is ticked
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
@@ -35,14 +44,9 @@ const Login = () => {
                     <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                         Sign In
                     </Button>
-                    <Grid container>
-                        <Grid item xs>
-                            <Link href="#" variant="body2">
-                                Forgot password?
-                            </Link>
-                        </Grid>
+                    <Grid container justifyContent="flex-end">
                         <Grid item>
-                            <Link href="#" variant="body2">
+                            <Link href="/signup" variant="body2">
                                 {"Don't have an account? Sign Up"}
                             </Link>
                         </Grid>
