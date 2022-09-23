@@ -3,9 +3,11 @@
 import { combineReducers } from 'redux';
 
 import productReducer from '../components/Product/productSlice';
+import authReducer from '../components/Login/authSlice';
 
 const rootReducer = combineReducers({
-    products: productReducer
+    products: productReducer,
+    auth: authReducer
 });
 
 export default rootReducer;

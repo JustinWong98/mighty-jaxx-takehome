@@ -14,7 +14,7 @@ export const login = async (req: Request, res: Response) => {
     });
     // rejection if no email
     if (!existingAdmin) {
-      return res.status(404).json({ message: "email does not exist." });
+      return res.status(404).json({ message: "Email is not registered." });
     }
     // logic to find if hashed password is correct
     const isPasswordCorrect = await bcrypt.compare(
@@ -47,28 +47,25 @@ export const signup = async (req: Request, res: Response) => {
     const existingAdminEmail = await Admin.findOne({
       email,
     });
-    console.log("1");
     if (existingAdminEmail) {
+      console.log("1");
       return res.status(400).json({ message: "Email already registered!" });
     }
-    console.log("2");
     // double check if passwords are the same
     if (password !== confirmPassword) {
+      console.log("2");
       return res.status(400).json({
         message: "Passwords do not match! (You shouldn't be seeing this!)",
       });
     }
-    console.log("3");
     // hash password
     const hashedPassword = await bcrypt.hash(password, 10);
     const newAdmin = new Admin({ email, hashedPassword });
     await newAdmin.save();
-    console.log("4");
     // to change SALT - keep it secure!
     const token = jwt.sign({ email: newAdmin.email, id: newAdmin.id }, "test", {
       expiresIn: "24h",
     });
-    console.log("5");
     res.status(201).json({ result: newAdmin, token });
   } catch (err) {
     res.status(409).json(`Error: ${err}`);

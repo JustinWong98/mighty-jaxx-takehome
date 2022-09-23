@@ -18,16 +18,21 @@ const initialState = {
 
 export const postAdmin = createAsyncThunk('auth/postAdmin', async (formData: signupFormData, thunkApi) => {
     try {
-        console.log(formData);
         const response = await axios.post(`http://localhost:5000/auth/signup`, formData);
-        console.log(response.data);
         return response.data;
     } catch (err: any) {
-        return thunkApi.rejectWithValue(err.message);
+        return thunkApi.rejectWithValue(err.response);
     }
 });
 
-// add function to delete an admin?
+export const loginAdmin = createAsyncThunk('auth/login', async (formData: loginFormData, thunkApi) => {
+    try {
+        const response = await axios.post(`http://localhost:5000/auth/login`, formData);
+        return response.data;
+    } catch (err: any) {
+        return thunkApi.rejectWithValue(err.response);
+    }
+});
 
 const authSlice = createSlice({
     name: 'auth',
@@ -55,6 +60,17 @@ const authSlice = createSlice({
                 state.data = action.payload;
             })
             .addCase(postAdmin.rejected, (state, action: PayloadAction<any>) => {
+                state.isLoading = false;
+                state.error = action.payload.data.message;
+            })
+            .addCase(loginAdmin.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(loginAdmin.fulfilled, (state, action: PayloadAction<any>) => {
+                state.isLoading = false;
+                state.data = action.payload.data.message;
+            })
+            .addCase(loginAdmin.rejected, (state, action: PayloadAction<any>) => {
                 state.isLoading = false;
                 state.error = action.payload;
             });
