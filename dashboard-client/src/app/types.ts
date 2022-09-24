@@ -3,7 +3,7 @@
 export interface Product {
     SKU: number;
     title: string;
-    image: string;
+    image: File | null;
 }
 
 export interface signupFormData {

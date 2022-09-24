@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 import { signupFormData, loginFormData } from '../../app/types';
-import { getErrorMessage } from '../../app/handlerFunctions';
 
 type AuthState = {
     isLoading: boolean;
@@ -68,7 +67,7 @@ const authSlice = createSlice({
             })
             .addCase(loginAdmin.fulfilled, (state, action: PayloadAction<any>) => {
                 state.isLoading = false;
-                state.data = action.payload.data.message;
+                state.data = action.payload;
             })
             .addCase(loginAdmin.rejected, (state, action: PayloadAction<any>) => {
                 state.isLoading = false;

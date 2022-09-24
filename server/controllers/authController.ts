@@ -7,10 +7,11 @@ import { adminInterface, Admin } from "../models/authModel";
 export const login = async (req: Request, res: Response) => {
   // extract fields from req.body
   const { email, password } = req.body;
+  const newEmail = email;
   try {
     // Find admin with email
     const existingAdmin = await Admin.findOne({
-      email,
+      email: newEmail,
     });
     // rejection if no email
     if (!existingAdmin) {
@@ -33,6 +34,7 @@ export const login = async (req: Request, res: Response) => {
         expiresIn: "24h",
       }
     );
+    res.cookie("token", token, { httpOnly: true });
     res.status(200).json({ result: existingAdmin, token });
   } catch (err) {
     res.status(500).json(`Error: ${err}`);
@@ -48,12 +50,10 @@ export const signup = async (req: Request, res: Response) => {
       email,
     });
     if (existingAdminEmail) {
-      console.log("1");
       return res.status(400).json({ message: "Email already registered!" });
     }
     // double check if passwords are the same
     if (password !== confirmPassword) {
-      console.log("2");
       return res.status(400).json({
         message: "Passwords do not match! (You shouldn't be seeing this!)",
       });
@@ -66,6 +66,7 @@ export const signup = async (req: Request, res: Response) => {
     const token = jwt.sign({ email: newAdmin.email, id: newAdmin.id }, "test", {
       expiresIn: "24h",
     });
+    res.cookie("token", token, { httpOnly: true });
     res.status(201).json({ result: newAdmin, token });
   } catch (err) {
     res.status(409).json(`Error: ${err}`);
