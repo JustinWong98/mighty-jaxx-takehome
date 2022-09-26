@@ -7,12 +7,13 @@ import ProductCard from '../Product/ProductCard';
 import { fetchProducts } from '../Product/productSlice';
 import ProductForm from '../Product/ProductForm';
 import { useNavigate } from 'react-router-dom';
+import { ProductListing } from '../../app/types';
 
 export const Dashboard = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const isLoading = useAppSelector((state) => state.products.isLoading);
-    const products = useAppSelector((state: RootState) => state.products);
+    const products = useAppSelector((state: RootState) => state.products.productList);
     useEffect(() => {
         dispatch(fetchProducts());
     }, []);
@@ -40,7 +41,13 @@ export const Dashboard = () => {
                     >
                         Add a New Product
                     </Button>
-                    <ProductCard />
+                    <Grid container spacing={2}>
+                        {products.map((product: ProductListing) => (
+                            <Grid item xs={6}>
+                                <ProductCard key={product.sku} sku={product.sku} title={product.title} image={product.image} />
+                            </Grid>
+                        ))}
+                    </Grid>
                 </Box>
             )}
         </Container>

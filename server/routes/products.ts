@@ -1,7 +1,13 @@
 import express from "express";
 import multer, { FileFilterCallback, MulterError } from "multer";
 
-import { getProducts, addProduct } from "../controllers/productsController";
+import {
+  getProducts,
+  addProduct,
+  getProduct,
+  editProduct,
+  deleteProduct,
+} from "../controllers/productsController";
 import { auth } from "../middleware/auth";
 
 const router = express.Router();
@@ -26,9 +32,9 @@ export const upload = multer({
 });
 
 router.get("/", auth, getProducts);
-// to separate into own middleware func
 router.post("/", auth, upload.single("image"), addProduct);
-// router.patch("/:id", auth, editProduct);
-// router.delete("/:id", auth, deletePost);
+router.get("/:id", auth, getProduct);
+router.patch("/:id", auth, upload.single("image"), editProduct);
+router.delete("/:id", auth, deleteProduct);
 
 export default router;

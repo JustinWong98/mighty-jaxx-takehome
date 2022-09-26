@@ -1,38 +1,54 @@
-import { Card, CardProps, CardActionArea, CardMedia, CardActions, Typography, CardContent, Button } from '@mui/material';
+import { Card, CardProps, CardActionArea, CardMedia, CardActions, Typography, CardContent, Button, CardHeader } from '@mui/material';
 import { useState } from 'react';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { ProductListing } from '../../app/types';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { deleteProduct, productFailure, writeProductSuccess } from './productSlice';
 // import { styled } from "@mui/system";
-
-import PlaceHolderIMG from '../../images/MightyJaxxIMG.jpg';
 
 // interface StyledCardProps extends CardProps {
 //     success?: boolean;
 // }
 
-const ProductCard = () => {
-    const [state, setState] = useState({
-        raised: false,
-        shadow: 1
-    });
-
+const ProductCard = ({ sku, title, image }: ProductListing) => {
     // const StyledCard = styled(Card)
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    const { isLoading, error } = useAppSelector((state) => state.products);
+    const [serverError, setServerError] = useState(error);
+    const handleDelete = async () => {
+        const deleteRes = await dispatch(deleteProduct(sku));
+        if (deleteRes.type === 'products/deleteProduct/rejected') {
+            dispatch(productFailure(deleteRes.payload));
+            setServerError(deleteRes.payload.data.message);
+        } else if (deleteRes.type === 'products/deleteProduct/fulfilled') {
+            dispatch(writeProductSuccess());
+            navigate('/dashboard');
+        }
+    };
 
     return (
-        <Card sx={{ maxWidth: 310, transition: 'transform 0.15s ease-in-out' }}>
+        <Card sx={{ maxWidth: 310, transition: 'transform 0.15s ease-in-out', height: 300 }}>
             <CardActionArea>
-                <CardMedia component="img" height="140" image={PlaceHolderIMG} alt="to insert title" />
+                <CardMedia component="img" height="140" image={image} alt={`${title}`} />
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
-                        Product Title
+                        SKU: {sku}
+                    </Typography>
+                    <Typography gutterBottom variant="body1" component="div">
+                        {title}
                     </Typography>
                 </CardContent>
             </CardActionArea>
             <CardActions>
-                <Button size="small" color="warning">
+                <Button size="small" color="warning" onClick={handleDelete}>
                     Delete
                 </Button>
-                <Button size="small" color="info">
-                    Edit
-                </Button>
+                <Link to={`/product/${sku}`}>
+                    <Button size="small" color="info">
+                        Edit
+                    </Button>
+                </Link>
             </CardActions>
         </Card>
     );

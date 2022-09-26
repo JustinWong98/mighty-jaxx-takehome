@@ -1,18 +1,20 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { Product } from '../../app/types';
+import { Product, ProductListing } from '../../app/types';
 
 type ProductState = {
     isLoading: boolean;
     error: null | string;
-    productList: Product[];
+    productList: ProductListing[];
+    product: ProductListing | null;
 };
 
 const initialState = {
     isLoading: false,
     error: null,
-    productList: []
+    productList: [],
+    product: null
 } as ProductState;
 
 export const fetchProducts = createAsyncThunk('products/getProducts', async (_, thunkApi) => {
@@ -24,15 +26,45 @@ export const fetchProducts = createAsyncThunk('products/getProducts', async (_, 
     }
 });
 
+export const getProduct = createAsyncThunk('products/getProduct', async (id: string, thunkApi) => {
+    try {
+        const response = await axios.get(`http://localhost:5000/products/${id}`);
+        return response.data;
+    } catch (err: any) {
+        return thunkApi.rejectWithValue(err.response);
+    }
+});
+
+export const editProduct = createAsyncThunk('products/editProduct', async ({ oldID, formData }: { oldID: string; formData: FormData }, thunkApi) => {
+    console.log(formData);
+    try {
+        const response = await axios.patch(`http://localhost:5000/products/${oldID}`, Object.fromEntries(formData), {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return response.data;
+    } catch (err: any) {
+        return thunkApi.rejectWithValue(err.response);
+    }
+});
+
 export const addProduct = createAsyncThunk('products/addProduct', async (formData: FormData, thunkApi) => {
     try {
-        console.log(Object.fromEntries(formData));
         const response = await axios.post(`http://localhost:5000/products`, Object.fromEntries(formData), {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         });
-        console.log(response.data);
+        return response.data;
+    } catch (err: any) {
+        return thunkApi.rejectWithValue(err.response);
+    }
+});
+
+export const deleteProduct = createAsyncThunk('products/deleteProduct', async (id: number, thunkApi) => {
+    try {
+        const response = await axios.delete(`http://localhost:5000/products/${id}`);
         return response.data;
     } catch (err: any) {
         return thunkApi.rejectWithValue(err.response);
@@ -46,13 +78,16 @@ const productSlice = createSlice({
         productPending: (state) => {
             state.isLoading = true;
         },
-        productSuccess: (state, action) => {
+        getProductSuccess: (state, action) => {
             state.isLoading = false;
             state.productList = action.payload;
         },
         productFailure: (state, action) => {
             state.isLoading = false;
             state.error = action.payload;
+        },
+        writeProductSuccess: (state) => {
+            state.isLoading = false;
         }
         // addProduct: (state, action) => {},
         // editProduct: (state, action) => {},
@@ -80,10 +115,39 @@ const productSlice = createSlice({
             .addCase(addProduct.rejected, (state, action: PayloadAction<any>) => {
                 state.isLoading = false;
                 state.error = action.payload;
+            })
+            .addCase(getProduct.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getProduct.fulfilled, (state, action: PayloadAction<any>) => {
+                state.isLoading = false;
+                state.product = action.payload;
+            })
+            .addCase(getProduct.rejected, (state, action: PayloadAction<any>) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            })
+            .addCase(editProduct.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(editProduct.fulfilled, (state, action: PayloadAction<any>) => {
+                state.isLoading = false;
+                state.productList = action.payload;
+            })
+            .addCase(deleteProduct.rejected, (state, action: PayloadAction<any>) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            })
+            .addCase(deleteProduct.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(deleteProduct.fulfilled, (state, action: PayloadAction<any>) => {
+                state.isLoading = false;
+                state.productList = action.payload;
             });
     }
 });
 
-export const { productPending, productSuccess, productFailure } = productSlice.actions;
+export const { productPending, getProductSuccess, productFailure, writeProductSuccess } = productSlice.actions;
 
 export default productSlice.reducer;

@@ -11,3 +11,24 @@ export const s3Upload = async (file: Express.Multer.File) => {
   };
   return await s3.upload(param).promise();
 };
+
+export const s3Edit = async (file: Express.Multer.File) => {
+  const s3 = new S3();
+  const imageName = file.originalname.toLowerCase().split(" ").join("-");
+  // const imageName = "hi.jpg";
+  console.log(imageName);
+  const param = {
+    Bucket: process.env.AWS_BUCKET_NAME!,
+    Key: `images/${imageName}`,
+  };
+  try {
+    const data = await s3.headObject(param).promise();
+    return false;
+  } catch (err: any) {
+    if (err.statusCode === 403) {
+      return true;
+    }
+
+    throw err;
+  }
+};

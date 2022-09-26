@@ -1,9 +1,15 @@
 // Type definitions for Typescript
 
 export interface Product {
-    SKU: number;
+    sku: number;
     title: string;
     image: File | null;
+}
+
+export interface ProductListing {
+    sku: number;
+    title: string;
+    image: string;
 }
 
 export interface signupFormData {
@@ -15,4 +21,10 @@ export interface signupFormData {
 export interface loginFormData {
     email: string;
     password: string;
+}
+
+export interface IAuth {
+    token: string | null;
+    handleLogin: () => void;
+    handleLogout: () => void;
 }
