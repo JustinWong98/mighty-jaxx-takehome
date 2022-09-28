@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { signupFormData, loginFormData } from '../../app/types';
+import { signupFormData, loginFormData, IServerData } from '../../app/types';
 
 type AuthState = {
     isLoading: boolean;
     error: null | string;
-    data: null | string;
+    data: null | IServerData;
 };
 
 const initialState = {
@@ -42,6 +42,7 @@ const authSlice = createSlice({
         },
         authSuccess: (state, action) => {
             state.isLoading = false;
+            console.log(action.payload);
             state.data = action.payload;
         },
         authFailure: (state, action) => {

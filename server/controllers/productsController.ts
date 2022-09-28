@@ -95,16 +95,36 @@ const newDataHandler = async ({
 };
 
 export const editProduct = async (req: Request, res: Response) => {
-  const { SKU, title } = req.body;
+  const { SKU, newTitle } = req.body;
   const { id } = req.params;
   const oldSKU = id;
   try {
     // find product with old SKU
+    // if there is another product not being edited that has the same SKU, reject
+    if (oldSKU !== SKU) {
+      const otherProductWithSameSKU = await Product.findOne({
+        sku: SKU,
+      });
+      if (otherProductWithSameSKU) {
+        return res.status(401).json({
+          message: "There is already another product with the same SKU!",
+        });
+      }
+    }
+    // if there is another product not being edited that has the same title, reject
+    const otherProductWithSameTitle = await Product.findOne({
+      title: newTitle,
+    });
+    if (otherProductWithSameTitle) {
+      return res.status(401).json({
+        message: "There is already another product with the same title!",
+      });
+    }
     const imageFile = <Express.Multer.File>req.file;
     const isImageNew = <boolean>await s3Edit(imageFile);
     const newData = await newDataHandler({
       SKU,
-      title,
+      title: newTitle,
       imageFile,
       isImageNew,
     });

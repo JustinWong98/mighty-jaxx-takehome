@@ -4,6 +4,7 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { ProductListing } from '../../app/types';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { deleteProduct, productFailure, writeProductSuccess } from './productSlice';
+import Cookies from 'js-cookie';
 // import { styled } from "@mui/system";
 
 // interface StyledCardProps extends CardProps {

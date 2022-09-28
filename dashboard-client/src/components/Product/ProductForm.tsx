@@ -5,13 +5,13 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { Product } from '../../app/types';
-import { addProduct, productFailure, writeProductSuccess } from './productSlice';
+import { addProduct, fetchProducts, productFailure, writeProductSuccess } from './productSlice';
 
 const ProductForm = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const { isLoading, error } = useAppSelector((state) => state.products);
-    const [serverError, setServerError] = useState(error);
+    const [serverError, setServerError] = useState<string>('');
     const [productData, setProductData] = useState({
         sku: 0,
         title: ''
@@ -65,6 +65,7 @@ const ProductForm = () => {
             console.log(formData);
             dispatch(addProduct(formData)).then((res) => {
                 if (res.type === 'products/addProduct/rejected') {
+                    console.log(res.payload);
                     dispatch(productFailure(res.payload));
                     setServerError(res.payload.data.message);
                 } else if (res.type === 'products/addProduct/fulfilled') {
@@ -96,7 +97,6 @@ const ProductForm = () => {
                     <Typography component="h1" variant="h5">
                         Add a New Product
                     </Typography>
-                    {error && <Typography sx={{ fontWeight: 'bold', color: '#cc0000' }}>{error}</Typography>}
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }} encType="multipart/form-data">
                         <Grid container spacing={2}>
                             <Grid item xs={12}>

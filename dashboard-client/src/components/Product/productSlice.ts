@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { Product, ProductListing } from '../../app/types';
+import { IServerData, Product, ProductListing } from '../../app/types';
 
 type ProductState = {
     isLoading: boolean;
-    error: null | string;
+    error: null | IServerData;
     productList: ProductListing[];
     product: ProductListing | null;
 };
@@ -114,6 +114,7 @@ const productSlice = createSlice({
             })
             .addCase(addProduct.rejected, (state, action: PayloadAction<any>) => {
                 state.isLoading = false;
+                console.log(action.payload);
                 state.error = action.payload;
             })
             .addCase(getProduct.pending, (state) => {
@@ -125,6 +126,7 @@ const productSlice = createSlice({
             })
             .addCase(getProduct.rejected, (state, action: PayloadAction<any>) => {
                 state.isLoading = false;
+                console.log(action.payload);
                 state.error = action.payload;
             })
             .addCase(editProduct.pending, (state) => {
@@ -133,6 +135,10 @@ const productSlice = createSlice({
             .addCase(editProduct.fulfilled, (state, action: PayloadAction<any>) => {
                 state.isLoading = false;
                 state.productList = action.payload;
+            })
+            .addCase(editProduct.rejected, (state, action: PayloadAction<any>) => {
+                state.isLoading = false;
+                state.error = action.payload;
             })
             .addCase(deleteProduct.rejected, (state, action: PayloadAction<any>) => {
                 state.isLoading = false;

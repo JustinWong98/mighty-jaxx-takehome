@@ -3,11 +3,13 @@ import { Avatar, Box, Button, CircularProgress, Container, CssBaseline, Grid, Ic
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { Product, ProductListing } from '../../app/types';
+import { IServerData, Product, ProductListing } from '../../app/types';
 import { writeProductSuccess, getProduct, productFailure, editProduct } from './productSlice';
 
 const EditProductForm = () => {
-    const { productList, isLoading, error }: { productList: ProductListing[]; isLoading: boolean; error: string | null; product: ProductListing | null } = useAppSelector((state) => state.products);
+    const { productList, isLoading, error }: { productList: ProductListing[]; isLoading: boolean; error: IServerData | null; product: ProductListing | null } = useAppSelector(
+        (state) => state.products
+    );
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const { id } = useParams();
@@ -17,7 +19,7 @@ const EditProductForm = () => {
         image: ''
     });
 
-    const [serverError, setServerError] = useState(error);
+    const [serverError, setServerError] = useState<string>('');
     const [errors, setErrors] = useState({
         skuError: '',
         titleError: '',

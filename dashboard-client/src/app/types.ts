@@ -25,6 +25,18 @@ export interface loginFormData {
 
 export interface IAuth {
     token: string | null;
+    email: string | null;
     handleLogin: () => void;
     handleLogout: () => void;
+}
+
+export interface IServerData {
+    result: {
+        _id: string;
+        email: string;
+        hashedPassword: string;
+        __v: number;
+    };
+    token: string;
+    email: string;
 }

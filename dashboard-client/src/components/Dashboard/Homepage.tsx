@@ -1,10 +1,15 @@
 import { Typography, Button, Box, Grid, Fade, ThemeProvider, CssBaseline } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import background from '../../images/MightyJaxxIMG.jpg';
 import { kablamFont } from '../../fonts/fonts';
+import { useAppDispatch } from '../../app/hooks';
+import { useEffect } from 'react';
 
 const Homepage: React.FC = () => {
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+    useEffect(() => {}, []);
     return (
         <Box
             sx={{

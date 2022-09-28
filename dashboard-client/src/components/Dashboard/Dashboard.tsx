@@ -8,18 +8,22 @@ import { fetchProducts } from '../Product/productSlice';
 import ProductForm from '../Product/ProductForm';
 import { useNavigate } from 'react-router-dom';
 import { ProductListing } from '../../app/types';
+import Navbar from '../Navbar/Navbar';
 
 export const Dashboard = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const isLoading = useAppSelector((state) => state.products.isLoading);
     const products = useAppSelector((state: RootState) => state.products.productList);
+    const serverError = useAppSelector((state) => state.products.error);
     useEffect(() => {
+        console.log(products);
         dispatch(fetchProducts());
     }, []);
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
+            <Navbar />
             {isLoading ? (
                 <CircularProgress />
             ) : (
