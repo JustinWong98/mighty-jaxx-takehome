@@ -1,19 +1,21 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { Container, Avatar, Button, TextField, Link, Grid, Box, Typography, CssBaseline, CircularProgress } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { loginFormData } from '../../app/types';
+import { IServerData, loginFormData } from '../../app/types';
 import { authPending, loginAdmin, authFailure, authSuccess } from './authSlice';
+import { PayloadAction } from '@reduxjs/toolkit';
 
 const Login = () => {
-    const navigate = useNavigate();
+    const navigate: NavigateFunction = useNavigate();
     const dispatch = useAppDispatch();
-    const isLoading = useAppSelector((state) => state.auth.isLoading);
-    const serverError = useAppSelector((state) => state.auth.error);
-    const userInfo = useAppSelector((state) => state.auth.data);
-    const [values, setValues] = useState({
+    const isLoading: boolean = useAppSelector((state) => state.auth.isLoading);
+    const serverError: string | null = useAppSelector((state) => state.auth.error);
+    const [showServerError, setShowServerError] = useState<string | null>('');
+    const userInfo: IServerData | null = useAppSelector((state) => state.auth.data);
+    const [values, setValues] = useState<loginFormData>({
         email: '',
         password: ''
     });
@@ -57,9 +59,10 @@ const Login = () => {
         e.preventDefault();
         if (validateRegistration(values)) {
             dispatch(authPending());
-            dispatch(loginAdmin(values)).then((res) => {
+            dispatch(loginAdmin(values)).then((res: PayloadAction<any>) => {
                 if (res.type === 'auth/login/rejected') {
                     dispatch(authFailure(res.payload));
+                    setShowServerError(res.payload.data.message);
                 } else if (res.type === 'auth/login/fulfilled') {
                     dispatch(authSuccess(res.payload));
                     navigate('/dashboard');
@@ -88,7 +91,7 @@ const Login = () => {
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
-                    {serverError && <Typography sx={{ fontWeight: 'bold', color: '#cc0000' }}>{serverError}</Typography>}
+                    {serverError && <Typography sx={{ fontWeight: 'bold', color: '#cc0000' }}>{showServerError}</Typography>}
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>

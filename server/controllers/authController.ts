@@ -42,7 +42,6 @@ export const login = async (req: Request, res: Response) => {
 
 export const signup = async (req: Request, res: Response) => {
   const { email, password, confirmPassword } = req.body;
-  console.log({ email, password, confirmPassword });
   try {
     // see if email domain exists already, reject if so
     const existingAdminEmail = await Admin.findOne({

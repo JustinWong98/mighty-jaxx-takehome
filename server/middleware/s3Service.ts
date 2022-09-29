@@ -5,7 +5,7 @@ export const s3Upload = async (file: Express.Multer.File) => {
   const s3 = new S3();
   const imageName = file.originalname.toLowerCase().split(" ").join("-");
   const param = {
-    Bucket: process.env.AWS_BUCKET_NAME!,
+    Bucket: "mightyjaxx-dashboard",
     Key: `images/${imageName}`,
     Body: file.buffer,
   };
@@ -16,7 +16,7 @@ export const s3Edit = async (file: Express.Multer.File) => {
   const s3 = new S3();
   const imageName = file.originalname.toLowerCase().split(" ").join("-");
   const param = {
-    Bucket: process.env.AWS_BUCKET_NAME!,
+    Bucket: "mightyjaxx-dashboard",
     Key: `images/${imageName}`,
   };
   try {

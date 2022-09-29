@@ -1,20 +1,21 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { Container, Avatar, Button, TextField, Link, Grid, Box, Typography, CssBaseline, CircularProgress } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { signupFormData } from '../../app/types';
+import { IServerData, signupFormData } from '../../app/types';
 import { postAdmin, authPending, authFailure, authSuccess } from './authSlice';
+import { PayloadAction } from '@reduxjs/toolkit';
 
 const Signup = () => {
-    const navigate = useNavigate();
+    const navigate: NavigateFunction = useNavigate();
     const dispatch = useAppDispatch();
-    const isLoading = useAppSelector((state) => state.auth.isLoading);
-    const serverError = useAppSelector((state) => state.auth.error);
-    const [showServerError, setShowServerError] = useState(serverError);
-    const userInfo = useAppSelector((state) => state.auth.data);
-    const [values, setValues] = useState({
+    const isLoading: boolean = useAppSelector((state) => state.auth.isLoading);
+    const serverError: string | null = useAppSelector((state) => state.auth.error);
+    const [showServerError, setShowServerError] = useState<string | null>('');
+    const userInfo: IServerData | null = useAppSelector((state) => state.auth.data);
+    const [values, setValues] = useState<signupFormData>({
         email: '',
         password: '',
         confirmPassword: ''
@@ -61,9 +62,10 @@ const Signup = () => {
         e.preventDefault();
         if (validateRegistration(values)) {
             dispatch(authPending());
-            dispatch(postAdmin(values)).then((res) => {
+            dispatch(postAdmin(values)).then((res: PayloadAction<any>) => {
                 if (res.type === 'auth/postAdmin/rejected') {
                     dispatch(authFailure(res.payload));
+                    console.log(res.payload);
                     setShowServerError(res.payload.data.message);
                 } else if (res.type === 'auth/postAdmin/fulfilled') {
                     dispatch(authSuccess(res.payload));
