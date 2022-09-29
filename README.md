@@ -6,6 +6,7 @@ To run:
 
 Unfinished:
    - Refactoring
+   - Typescript Type declarations for PayloadActions (currently it is set at any)
    - Frontend Design
    - Search Bar
 
