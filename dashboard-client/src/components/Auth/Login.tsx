@@ -6,15 +6,14 @@ import { LockOutlined } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { loginFormData } from '../../app/types';
 import { authPending, loginAdmin, authFailure, authSuccess } from './authSlice';
-import { useAuth } from './AuthContext';
 
 const Login = () => {
-    const auth = useAuth();
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const isLoading = useAppSelector((state) => state.auth.isLoading);
     const serverError = useAppSelector((state) => state.auth.error);
     const [showServerError, setShowServerError] = useState(serverError);
+    const userInfo = useAppSelector((state) => state.auth.data);
     const [values, setValues] = useState({
         email: '',
         password: ''
@@ -25,14 +24,13 @@ const Login = () => {
         passwordError: ''
     });
 
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
     useEffect(() => {
-        // if user is already logged in, redirect to dashboard
-    }, [errors]);
+        if (userInfo?.result.email && userInfo?.token) {
+            navigate('/dashboard');
+        }
+    }, []);
 
     const handleOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setIsSubmitting(false);
         const { name, value } = e.target;
         setValues({ ...values, [name]: value });
     };
@@ -63,7 +61,6 @@ const Login = () => {
             dispatch(loginAdmin(values)).then((res) => {
                 if (res.type === 'auth/login/rejected') {
                     dispatch(authFailure(res.payload));
-                    auth.handleLogin();
                     setShowServerError(res.payload.data.message);
                 } else if (res.type === 'auth/login/fulfilled') {
                     dispatch(authSuccess(res.payload));
@@ -93,7 +90,7 @@ const Login = () => {
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
-                    {serverError && <Typography sx={{ fontWeight: 'bold', color: '#cc0000' }}>{showServerError}</Typography>}
+                    {serverError && <Typography sx={{ fontWeight: 'bold', color: '#cc0000' }}>{serverError}</Typography>}
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>

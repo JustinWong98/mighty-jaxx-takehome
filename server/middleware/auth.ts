@@ -14,7 +14,6 @@ export const auth = (req: Request, res: Response, next: () => void) => {
   if (typeof header !== "undefined") {
     const bearer = header.split("=");
     const token = bearer[1];
-    console.log(token);
     // verify if token is valid/legit, if not, return 403
     if (token) {
       const decodedToken = <jwt.JwtPayload>decode(token);
@@ -23,9 +22,7 @@ export const auth = (req: Request, res: Response, next: () => void) => {
       }
       jwt.verify(token, "test", (err, user) => {
         if (err) return res.status(403).json("Invalid token");
-        console.log(req.body);
         req.body.user = user;
-        console.log(req.body);
         next();
       });
     }

@@ -6,11 +6,13 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { Product } from '../../app/types';
 import { addProduct, fetchProducts, productFailure, writeProductSuccess } from './productSlice';
+import { authClear } from '../Auth/authSlice';
 
 const ProductForm = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const { isLoading, error } = useAppSelector((state) => state.products);
+    const userInfo = useAppSelector((state) => state.auth.data);
     const [serverError, setServerError] = useState<string>('');
     const [productData, setProductData] = useState({
         sku: 0,
@@ -19,6 +21,13 @@ const ProductForm = () => {
 
     const [imageFile, setImageFile] = useState<File>();
     const [imagePreview, setImagePreview] = useState<string>();
+
+    useEffect(() => {
+        if (!userInfo?.result.email && !userInfo?.token) {
+            dispatch(authClear());
+            navigate('/login');
+        }
+    }, []);
 
     const [errors, setErrors] = useState({
         skuError: '',

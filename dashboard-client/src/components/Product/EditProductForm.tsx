@@ -4,14 +4,14 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { IServerData, Product, ProductListing } from '../../app/types';
+import { authClear } from '../Auth/authSlice';
 import { writeProductSuccess, getProduct, productFailure, editProduct } from './productSlice';
 
 const EditProductForm = () => {
-    const { productList, isLoading, error }: { productList: ProductListing[]; isLoading: boolean; error: IServerData | null; product: ProductListing | null } = useAppSelector(
-        (state) => state.products
-    );
+    const { productList, isLoading, error }: { productList: ProductListing[]; isLoading: boolean; error: string | null; product: ProductListing | null } = useAppSelector((state) => state.products);
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const userInfo = useAppSelector((state) => state.auth.data);
     const { id } = useParams();
     const [editedProduct, setEditedProduct] = useState({
         sku: '',
@@ -29,15 +29,20 @@ const EditProductForm = () => {
     const [imagePreview, setImagePreview] = useState<string>();
 
     useEffect(() => {
-        dispatch(getProduct(String(id))).then((res) => {
-            setEditedProduct(res.payload);
-            setImagePreview(res.payload.image);
-            const imageType = res.payload.image.split('/')[4].split('.')[1];
-            const blob = new Blob([res.payload.image], { type: `image/${imageType}` });
-            const file = new File([blob], res.payload.image, { type: blob.type });
-            console.log(file);
-            setImageFile(file);
-        });
+        if (userInfo?.result.email && userInfo?.token) {
+            dispatch(getProduct(String(id))).then((res) => {
+                setEditedProduct(res.payload);
+                setImagePreview(res.payload.image);
+                const imageType = res.payload.image.split('/')[4].split('.')[1];
+                const blob = new Blob([res.payload.image], { type: `image/${imageType}` });
+                const file = new File([blob], res.payload.image, { type: blob.type });
+                console.log(file);
+                setImageFile(file);
+            });
+        } else {
+            dispatch(authClear());
+            navigate('/login');
+        }
     }, [id]);
 
     const handleOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -75,7 +80,7 @@ const EditProductForm = () => {
             const formData = new FormData();
             formData.append('image', imageFile!);
             formData.append('SKU', editedProduct.sku.toString());
-            formData.append('title', editedProduct.title);
+            formData.append('newTitle', editedProduct.title);
             const oldID = String(id);
             dispatch(editProduct({ oldID, formData })).then((res) => {
                 if (res.type === 'products/editProduct/rejected') {

@@ -6,15 +6,14 @@ import { LockOutlined } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { signupFormData } from '../../app/types';
 import { postAdmin, authPending, authFailure, authSuccess } from './authSlice';
-import { useAuth } from './AuthContext';
 
 const Signup = () => {
-    const auth = useAuth();
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const isLoading = useAppSelector((state) => state.auth.isLoading);
     const serverError = useAppSelector((state) => state.auth.error);
     const [showServerError, setShowServerError] = useState(serverError);
+    const userInfo = useAppSelector((state) => state.auth.data);
     const [values, setValues] = useState({
         email: '',
         password: '',
@@ -28,8 +27,10 @@ const Signup = () => {
     });
 
     useEffect(() => {
-        // if user is already logged in, redirect to dashboard
-    }, [errors]);
+        if (userInfo?.result.email || userInfo?.token) {
+            navigate('/dashboard');
+        }
+    }, []);
 
     const handleOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -63,7 +64,6 @@ const Signup = () => {
             dispatch(postAdmin(values)).then((res) => {
                 if (res.type === 'auth/postAdmin/rejected') {
                     dispatch(authFailure(res.payload));
-                    auth.handleLogin();
                     setShowServerError(res.payload.data.message);
                 } else if (res.type === 'auth/postAdmin/fulfilled') {
                     dispatch(authSuccess(res.payload));

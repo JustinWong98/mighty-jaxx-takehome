@@ -38,5 +38,4 @@ export interface IServerData {
         __v: number;
     };
     token: string;
-    email: string;
 }

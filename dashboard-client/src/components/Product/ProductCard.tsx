@@ -29,7 +29,7 @@ const ProductCard = ({ sku, title, image }: ProductListing) => {
     };
 
     return (
-        <Card sx={{ maxWidth: 310, transition: 'transform 0.15s ease-in-out', height: 300 }}>
+        <Card sx={{ maxWidth: 310, transition: 'transform 0.15s ease-in-out', height: 300, backgroundColor: '#fccf01' }}>
             <CardActionArea>
                 <CardMedia component="img" height="140" image={image} alt={`${title}`} />
                 <CardContent>
@@ -42,11 +42,11 @@ const ProductCard = ({ sku, title, image }: ProductListing) => {
                 </CardContent>
             </CardActionArea>
             <CardActions>
-                <Button size="small" color="warning" onClick={handleDelete}>
+                <Button size="medium" color="warning" onClick={handleDelete}>
                     Delete
                 </Button>
                 <Link to={`/product/${sku}`}>
-                    <Button size="small" color="info">
+                    <Button size="medium" color="info">
                         Edit
                     </Button>
                 </Link>

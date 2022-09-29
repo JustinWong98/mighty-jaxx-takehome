@@ -42,12 +42,15 @@ const authSlice = createSlice({
         },
         authSuccess: (state, action) => {
             state.isLoading = false;
-            console.log(action.payload);
             state.data = action.payload;
         },
         authFailure: (state, action) => {
             state.isLoading = false;
             state.error = action.payload;
+        },
+        authClear: (state) => {
+            state.data = null;
+            state.error = null;
         }
     },
     extraReducers: (builder) => {
@@ -77,6 +80,6 @@ const authSlice = createSlice({
     }
 });
 
-export const { authPending, authSuccess, authFailure } = authSlice.actions;
+export const { authPending, authSuccess, authFailure, authClear } = authSlice.actions;
 
 export default authSlice.reducer;

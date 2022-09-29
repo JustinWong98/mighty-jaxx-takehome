@@ -1,14 +1,21 @@
-import e, { Request, Response } from "express";
+import { Request, Response } from "express";
 import { s3Edit, s3Upload } from "../middleware/s3Service";
 import { Product, productInterface } from "../models/productModel";
-import fs from "fs";
-import { v4 } from "uuid";
-import { resourceLimits } from "worker_threads";
 
 export const getProducts = async (req: Request, res: Response) => {
+  const { page } = req.query;
   try {
-    const productList: productInterface[] = await Product.find();
-    res.status(200).json(productList);
+    const totalProducts: number = await Product.countDocuments();
+    const productList: productInterface[] = await Product.find()
+      .sort({
+        _id: -1,
+      })
+      .limit(6)
+      .skip((Number(page) - 1) * 6);
+    res.status(200).json({
+      productList,
+      totalPageNumber: Math.ceil(totalProducts / 6),
+    });
   } catch (err) {
     res.status(404).json(`Error: ${err}`);
   }

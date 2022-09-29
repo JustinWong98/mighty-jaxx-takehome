@@ -5,21 +5,23 @@ import { IServerData, Product, ProductListing } from '../../app/types';
 
 type ProductState = {
     isLoading: boolean;
-    error: null | IServerData;
+    error: null | string;
     productList: ProductListing[];
     product: ProductListing | null;
+    totalPageNumber: number;
 };
 
 const initialState = {
     isLoading: false,
     error: null,
     productList: [],
-    product: null
+    product: null,
+    totalPageNumber: 0
 } as ProductState;
 
-export const fetchProducts = createAsyncThunk('products/getProducts', async (_, thunkApi) => {
+export const fetchProducts = createAsyncThunk('products/getProducts', async (page: number, thunkApi) => {
     try {
-        const response = await axios.get(`http://localhost:5000/products`);
+        const response = await axios.get(`http://localhost:5000/products?page=${page}`);
         return response.data;
     } catch (err: any) {
         return thunkApi.rejectWithValue(err.response);
@@ -36,7 +38,6 @@ export const getProduct = createAsyncThunk('products/getProduct', async (id: str
 });
 
 export const editProduct = createAsyncThunk('products/editProduct', async ({ oldID, formData }: { oldID: string; formData: FormData }, thunkApi) => {
-    console.log(formData);
     try {
         const response = await axios.patch(`http://localhost:5000/products/${oldID}`, Object.fromEntries(formData), {
             headers: {
@@ -88,6 +89,10 @@ const productSlice = createSlice({
         },
         writeProductSuccess: (state) => {
             state.isLoading = false;
+        },
+        resetData: (state) => {
+            state.productList = [];
+            state.isLoading = false;
         }
         // addProduct: (state, action) => {},
         // editProduct: (state, action) => {},
@@ -100,7 +105,8 @@ const productSlice = createSlice({
             })
             .addCase(fetchProducts.fulfilled, (state, action: PayloadAction<any>) => {
                 state.isLoading = false;
-                state.productList = action.payload;
+                state.totalPageNumber = action.payload.totalPageNumber;
+                state.productList = action.payload.productList;
             })
             .addCase(fetchProducts.rejected, (state, action: PayloadAction<any>) => {
                 state.isLoading = false;
@@ -114,7 +120,6 @@ const productSlice = createSlice({
             })
             .addCase(addProduct.rejected, (state, action: PayloadAction<any>) => {
                 state.isLoading = false;
-                console.log(action.payload);
                 state.error = action.payload;
             })
             .addCase(getProduct.pending, (state) => {
@@ -126,7 +131,6 @@ const productSlice = createSlice({
             })
             .addCase(getProduct.rejected, (state, action: PayloadAction<any>) => {
                 state.isLoading = false;
-                console.log(action.payload);
                 state.error = action.payload;
             })
             .addCase(editProduct.pending, (state) => {
@@ -154,6 +158,6 @@ const productSlice = createSlice({
     }
 });
 
-export const { productPending, getProductSuccess, productFailure, writeProductSuccess } = productSlice.actions;
+export const { productPending, getProductSuccess, productFailure, writeProductSuccess, resetData } = productSlice.actions;
 
 export default productSlice.reducer;
