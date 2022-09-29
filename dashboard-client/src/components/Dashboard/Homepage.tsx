@@ -3,13 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import background from '../../images/MightyJaxxIMG.jpg';
 import { kablamFont } from '../../fonts/fonts';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { useAppSelector } from '../../app/hooks';
 import { useEffect } from 'react';
-import { authClear } from '../Auth/authSlice';
 
 const Homepage: React.FC = () => {
     const navigate = useNavigate();
-    const dispatch = useAppDispatch();
     const userInfo = useAppSelector((state) => state.auth.data);
     useEffect(() => {
         if (userInfo?.result.email && userInfo?.token) {
@@ -64,7 +62,8 @@ const Homepage: React.FC = () => {
                     </Grid>
                     <Grid
                         item
-                        xs={6}
+                        xs={12}
+                        md={6}
                         sx={{
                             display: 'flex',
                             alignItems: 'center',
@@ -72,14 +71,15 @@ const Homepage: React.FC = () => {
                         }}
                     >
                         <Link to="/login" style={{ textDecoration: 'none' }}>
-                            <Button variant="contained" size="large">
+                            <Button variant="contained" size="medium">
                                 Login
                             </Button>
                         </Link>
                     </Grid>
                     <Grid
                         item
-                        xs={6}
+                        xs={12}
+                        md={6}
                         sx={{
                             display: 'flex',
                             alignItems: 'center',
@@ -87,7 +87,7 @@ const Homepage: React.FC = () => {
                         }}
                     >
                         <Link to="/signup" style={{ textDecoration: 'none' }}>
-                            <Button variant="contained" size="large">
+                            <Button variant="contained" size="medium">
                                 Create Admin Account
                             </Button>
                         </Link>

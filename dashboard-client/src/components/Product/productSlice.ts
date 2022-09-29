@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { IServerData, Product, ProductListing } from '../../app/types';
+import { ProductListing } from '../../app/types';
 
 type ProductState = {
     isLoading: boolean;
@@ -94,9 +94,6 @@ const productSlice = createSlice({
             state.productList = [];
             state.isLoading = false;
         }
-        // addProduct: (state, action) => {},
-        // editProduct: (state, action) => {},
-        // deleteProduct: (state, action) => {}
     },
     extraReducers: (builder) => {
         builder

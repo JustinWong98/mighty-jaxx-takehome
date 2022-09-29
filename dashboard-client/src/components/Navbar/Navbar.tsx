@@ -1,6 +1,5 @@
-import { AppBar, Box, Typography, Toolbar, Button, Container, CssBaseline } from '@mui/material';
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { AppBar, Typography, Toolbar, Button, Container, CssBaseline } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { authClear } from '../Auth/authSlice';
 import { resetData } from '../Product/productSlice';

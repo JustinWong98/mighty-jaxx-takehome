@@ -1,9 +1,9 @@
-import { Container, Box, AppBar, Typography, Grow, Grid, CssBaseline, CircularProgress, Button, Paper } from '@mui/material';
+import { Container, Box, Grid, CssBaseline, CircularProgress, Button, Paper } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { useEffect, useState } from 'react';
 import { RootState } from '../../app/store';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Pagination, PaginationItem } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Pagination } from '@mui/material';
 
 import ProductCard from '../Product/ProductCard';
 import { fetchProducts } from '../Product/productSlice';
@@ -13,18 +13,12 @@ import Navbar from '../Navbar/Navbar';
 import background from '../../images/MightyJaxxIMG.jpg';
 import { authClear } from '../Auth/authSlice';
 
-const useQuery = () => {
-    return new URLSearchParams(useLocation().search);
-};
-
 export const Dashboard = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const isLoading = useAppSelector((state) => state.products.isLoading);
     const products = useAppSelector((state: RootState) => state.products.productList);
-    const serverError = useAppSelector((state) => state.products.error);
     const totalPages = useAppSelector((state) => state.products.totalPageNumber);
-    const query = useQuery();
     const [page, setPage] = useState(1);
     const userInfo = useAppSelector((state) => state.auth.data);
     useEffect(() => {

@@ -1,5 +1,4 @@
 import jwt, { decode } from "jsonwebtoken";
-import cookieParser from "cookie-parser";
 import type { Request, Response } from "express";
 
 declare module "jsonwebtoken" {
@@ -10,7 +9,7 @@ declare module "jsonwebtoken" {
 
 export const auth = (req: Request, res: Response, next: () => void) => {
   const header = req.headers.cookie;
-  // change SALT
+  // SALT will be hard coded as test just for simplicity
   if (typeof header !== "undefined") {
     const bearer = header.split("=");
     const token = bearer[1];

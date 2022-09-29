@@ -1,30 +1,18 @@
-import { Card, CardProps, CardActionArea, CardMedia, CardActions, Typography, CardContent, Button, CardHeader } from '@mui/material';
-import { useState } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Card, CardActionArea, CardMedia, CardActions, Typography, CardContent, Button, CircularProgress } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
 import { ProductListing } from '../../app/types';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { useAppDispatch } from '../../app/hooks';
 import { deleteProduct, productFailure, writeProductSuccess } from './productSlice';
-import Cookies from 'js-cookie';
-// import { styled } from "@mui/system";
-
-// interface StyledCardProps extends CardProps {
-//     success?: boolean;
-// }
 
 const ProductCard = ({ sku, title, image }: ProductListing) => {
-    // const StyledCard = styled(Card)
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const { isLoading, error } = useAppSelector((state) => state.products);
-    const [serverError, setServerError] = useState(error);
     const handleDelete = async () => {
         const deleteRes = await dispatch(deleteProduct(sku));
         if (deleteRes.type === 'products/deleteProduct/rejected') {
             dispatch(productFailure(deleteRes.payload));
-            setServerError(deleteRes.payload.data.message);
         } else if (deleteRes.type === 'products/deleteProduct/fulfilled') {
             dispatch(writeProductSuccess());
-            navigate('/dashboard');
         }
     };
 
@@ -42,10 +30,12 @@ const ProductCard = ({ sku, title, image }: ProductListing) => {
                 </CardContent>
             </CardActionArea>
             <CardActions>
-                <Button size="medium" color="warning" onClick={handleDelete}>
-                    Delete
-                </Button>
-                <Link to={`/product/${sku}`}>
+                <Link style={{ textDecoration: 'none' }} to={`/dashboard}`}>
+                    <Button size="medium" color="warning" onClick={handleDelete}>
+                        Delete
+                    </Button>
+                </Link>
+                <Link style={{ textDecoration: 'none' }} to={`/product/${sku}`}>
                     <Button size="medium" color="info">
                         Edit
                     </Button>

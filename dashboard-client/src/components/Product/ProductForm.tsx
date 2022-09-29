@@ -1,11 +1,11 @@
-import { useRef, useState, useEffect } from 'react';
-import { Container, Typography, Grid, FormControl, CssBaseline, CircularProgress, Box, Avatar, TextField, Button, Link, IconButton } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Container, Typography, Grid, CssBaseline, CircularProgress, Box, Avatar, TextField, Button, Link, IconButton } from '@mui/material';
 import { InsertPhoto, LocalGroceryStoreOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { Product } from '../../app/types';
-import { addProduct, fetchProducts, productFailure, writeProductSuccess } from './productSlice';
+import { addProduct, productFailure, writeProductSuccess } from './productSlice';
 import { authClear } from '../Auth/authSlice';
 
 const ProductForm = () => {
@@ -71,10 +71,8 @@ const ProductForm = () => {
             formData.append('image', imageFile!);
             formData.append('SKU', productData.sku.toString());
             formData.append('title', productData.title);
-            console.log(formData);
             dispatch(addProduct(formData)).then((res) => {
                 if (res.type === 'products/addProduct/rejected') {
-                    console.log(res.payload);
                     dispatch(productFailure(res.payload));
                     setServerError(res.payload.data.message);
                 } else if (res.type === 'products/addProduct/fulfilled') {

@@ -12,7 +12,6 @@ const Login = () => {
     const dispatch = useAppDispatch();
     const isLoading = useAppSelector((state) => state.auth.isLoading);
     const serverError = useAppSelector((state) => state.auth.error);
-    const [showServerError, setShowServerError] = useState(serverError);
     const userInfo = useAppSelector((state) => state.auth.data);
     const [values, setValues] = useState({
         email: '',
@@ -61,7 +60,6 @@ const Login = () => {
             dispatch(loginAdmin(values)).then((res) => {
                 if (res.type === 'auth/login/rejected') {
                     dispatch(authFailure(res.payload));
-                    setShowServerError(res.payload.data.message);
                 } else if (res.type === 'auth/login/fulfilled') {
                     dispatch(authSuccess(res.payload));
                     navigate('/dashboard');
@@ -112,7 +110,6 @@ const Login = () => {
                                 {errors.passwordError && <Typography sx={{ fontWeight: 'bold', color: '#cc0000' }}>{errors.passwordError}</Typography>}
                             </Grid>
                         </Grid>
-                        {/* <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" /> */}
                         <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                             Sign In
                         </Button>

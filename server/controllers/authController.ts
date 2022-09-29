@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-import { adminInterface, Admin } from "../models/authModel";
+import { Admin } from "../models/authModel";
 
 export const login = async (req: Request, res: Response) => {
   // extract fields from req.body
@@ -26,7 +26,6 @@ export const login = async (req: Request, res: Response) => {
     if (!isPasswordCorrect) {
       return res.status(400).json({ message: "Incorrect Password." });
     }
-    // to change SALT - keep it secure!
     const token = jwt.sign(
       { email: existingAdmin.email, id: existingAdmin._id },
       "test",
@@ -62,7 +61,6 @@ export const signup = async (req: Request, res: Response) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newAdmin = new Admin({ email, hashedPassword });
     await newAdmin.save();
-    // to change SALT - keep it secure!
     const token = jwt.sign({ email: newAdmin.email, id: newAdmin.id }, "test", {
       expiresIn: "24h",
     });
