@@ -26,9 +26,8 @@ app.use(
 app.use("/products", productRoutes);
 app.use("/auth", authRoutes);
 
-const CONNECTION_STRING: string =
-  "mongodb+srv://user:user@dashboard.2a8bgzz.mongodb.net/?retryWrites=true&w=majority";
-const PORT = 5000;
+const CONNECTION_STRING: string = process.env.CONNECTION_STRING as string;
+const PORT = process.env.PORT ? Number(process.env.PORT) : 5000;
 
 mongoose
   .connect(CONNECTION_STRING)
