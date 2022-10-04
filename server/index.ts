@@ -26,11 +26,10 @@ app.use(
 app.use("/products", productRoutes);
 app.use("/auth", authRoutes);
 
-const CONNECTION_STRING: string = process.env.CONNECTION_STRING as string;
 const PORT = process.env.PORT ? Number(process.env.PORT) : 5000;
 
 mongoose
-  .connect(CONNECTION_STRING)
+  .connect(process.env.CONNECTION_STRING as string)
   .then(() =>
     app.listen(PORT, () => {
       console.log(`Server running on Port ${PORT}`);
