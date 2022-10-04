@@ -7,7 +7,6 @@ import { Pagination } from '@mui/material';
 
 import ProductCard from '../Product/ProductCard';
 import { fetchProducts } from '../Product/productSlice';
-import ProductForm from '../Product/ProductForm';
 import { ProductListing } from '../../app/types';
 import Navbar from '../Navbar/Navbar';
 import background from '../../images/MightyJaxxIMG.jpg';

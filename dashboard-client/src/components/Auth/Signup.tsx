@@ -65,7 +65,6 @@ const Signup = () => {
             dispatch(postAdmin(values)).then((res: PayloadAction<any>) => {
                 if (res.type === 'auth/postAdmin/rejected') {
                     dispatch(authFailure(res.payload));
-                    console.log(res.payload);
                     setShowServerError(res.payload.data.message);
                 } else if (res.type === 'auth/postAdmin/fulfilled') {
                     dispatch(authSuccess(res.payload));

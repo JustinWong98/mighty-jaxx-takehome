@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction, AsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction, AsyncThunk, AnyAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 import { signupFormData, loginFormData, IServerData } from '../../app/types';
@@ -15,7 +15,7 @@ const initialState = {
     data: null
 } as AuthState;
 
-export const postAdmin: AsyncThunk<string, signupFormData, {}> = createAsyncThunk('auth/postAdmin', async (formData: signupFormData, thunkApi) => {
+export const postAdmin = createAsyncThunk('auth/postAdmin', async (formData: signupFormData, thunkApi) => {
     try {
         const response = await axios.post(`http://localhost:5000/auth/signup`, formData);
         return response.data;
@@ -24,7 +24,7 @@ export const postAdmin: AsyncThunk<string, signupFormData, {}> = createAsyncThun
     }
 });
 
-export const loginAdmin: AsyncThunk<string, loginFormData, {}> = createAsyncThunk('auth/login', async (formData: loginFormData, thunkApi) => {
+export const loginAdmin = createAsyncThunk('auth/login', async (formData: loginFormData, thunkApi) => {
     try {
         const response = await axios.post(`http://localhost:5000/auth/login`, formData);
         return response.data;
@@ -51,6 +51,7 @@ const authSlice = createSlice({
         authClear: (state) => {
             state.data = null;
             state.error = null;
+            state.isLoading = false;
         }
     },
     extraReducers: (builder) => {
@@ -58,22 +59,22 @@ const authSlice = createSlice({
             .addCase(postAdmin.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(postAdmin.fulfilled, (state, action: PayloadAction<any, string>) => {
+            .addCase(postAdmin.fulfilled, (state, action: PayloadAction<IServerData>) => {
                 state.isLoading = false;
                 state.data = action.payload;
             })
-            .addCase(postAdmin.rejected, (state, action: PayloadAction<any, string>) => {
+            .addCase(postAdmin.rejected, (state, action: PayloadAction<any>) => {
                 state.isLoading = false;
                 state.error = action.payload.data.message;
             })
             .addCase(loginAdmin.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(loginAdmin.fulfilled, (state, action: PayloadAction<any, string>) => {
+            .addCase(loginAdmin.fulfilled, (state, action: PayloadAction<IServerData>) => {
                 state.isLoading = false;
                 state.data = action.payload;
             })
-            .addCase(loginAdmin.rejected, (state, action: PayloadAction<any, string>) => {
+            .addCase(loginAdmin.rejected, (state, action: PayloadAction<any>) => {
                 state.isLoading = false;
                 state.error = action.payload.data.message;
             });

@@ -100,11 +100,22 @@ const productSlice = createSlice({
             .addCase(fetchProducts.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(fetchProducts.fulfilled, (state, action: PayloadAction<any>) => {
-                state.isLoading = false;
-                state.totalPageNumber = action.payload.totalPageNumber;
-                state.productList = action.payload.productList;
-            })
+            .addCase(
+                fetchProducts.fulfilled,
+                (
+                    state,
+                    {
+                        payload
+                    }: PayloadAction<{
+                        productList: ProductListing[];
+                        totalPageNumber: number;
+                    }>
+                ) => {
+                    state.isLoading = false;
+                    state.totalPageNumber = payload.totalPageNumber;
+                    state.productList = payload.productList;
+                }
+            )
             .addCase(fetchProducts.rejected, (state, action: PayloadAction<any>) => {
                 state.isLoading = false;
                 state.error = action.payload;
@@ -122,9 +133,9 @@ const productSlice = createSlice({
             .addCase(getProduct.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(getProduct.fulfilled, (state, action: PayloadAction<any>) => {
+            .addCase(getProduct.fulfilled, (state, { payload }: PayloadAction<ProductListing>) => {
                 state.isLoading = false;
-                state.product = action.payload;
+                state.product = payload;
             })
             .addCase(getProduct.rejected, (state, action: PayloadAction<any>) => {
                 state.isLoading = false;
@@ -133,7 +144,7 @@ const productSlice = createSlice({
             .addCase(editProduct.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(editProduct.fulfilled, (state, action: PayloadAction<any>) => {
+            .addCase(editProduct.fulfilled, (state, action: PayloadAction<ProductListing[]>) => {
                 state.isLoading = false;
                 state.productList = action.payload;
             })
@@ -148,7 +159,7 @@ const productSlice = createSlice({
             .addCase(deleteProduct.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(deleteProduct.fulfilled, (state, action: PayloadAction<any>) => {
+            .addCase(deleteProduct.fulfilled, (state, action: PayloadAction<ProductListing[]>) => {
                 state.isLoading = false;
                 state.productList = action.payload;
             });

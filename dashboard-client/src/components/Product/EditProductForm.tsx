@@ -36,7 +36,6 @@ const EditProductForm = () => {
                 const imageType = res.payload.image.split('/')[4].split('.')[1];
                 const blob = new Blob([res.payload.image], { type: `image/${imageType}` });
                 const file = new File([blob], res.payload.image, { type: blob.type });
-                console.log(file);
                 setImageFile(file);
             });
         } else {
