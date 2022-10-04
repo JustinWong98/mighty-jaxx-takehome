@@ -17,7 +17,7 @@ const initialState = {
 
 export const postAdmin = createAsyncThunk('auth/postAdmin', async (formData: signupFormData, thunkApi) => {
     try {
-        const response = await axios.post(`http://localhost:5000/auth/signup`, formData);
+        const response = await axios.post(`https://mightyjaxx-dashboard.herokuapp.com/auth/signup`, formData);
         return response.data;
     } catch (err: any) {
         return thunkApi.rejectWithValue(err.response);
@@ -26,7 +26,7 @@ export const postAdmin = createAsyncThunk('auth/postAdmin', async (formData: sig
 
 export const loginAdmin = createAsyncThunk('auth/login', async (formData: loginFormData, thunkApi) => {
     try {
-        const response = await axios.post(`http://localhost:5000/auth/login`, formData);
+        const response = await axios.post(`https://mightyjaxx-dashboard.herokuapp.com/auth/login`, formData);
         return response.data;
     } catch (err: any) {
         return thunkApi.rejectWithValue(err.response);

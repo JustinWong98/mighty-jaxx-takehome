@@ -21,7 +21,7 @@ const initialState = {
 
 export const fetchProducts = createAsyncThunk('products/getProducts', async (page: number, thunkApi) => {
     try {
-        const response = await axios.get(`http://localhost:5000/products?page=${page}`);
+        const response = await axios.get(`https://mightyjaxx-dashboard.herokuapp.com/products?page=${page}`);
         return response.data;
     } catch (err: any) {
         return thunkApi.rejectWithValue(err.response);
@@ -30,7 +30,7 @@ export const fetchProducts = createAsyncThunk('products/getProducts', async (pag
 
 export const getProduct = createAsyncThunk('products/getProduct', async (id: string, thunkApi) => {
     try {
-        const response = await axios.get(`http://localhost:5000/products/${id}`);
+        const response = await axios.get(`https://mightyjaxx-dashboard.herokuapp.com/products/${id}`);
         return response.data;
     } catch (err: any) {
         return thunkApi.rejectWithValue(err.response);
@@ -39,7 +39,7 @@ export const getProduct = createAsyncThunk('products/getProduct', async (id: str
 
 export const editProduct = createAsyncThunk('products/editProduct', async ({ oldID, formData }: { oldID: string; formData: FormData }, thunkApi) => {
     try {
-        const response = await axios.patch(`http://localhost:5000/products/${oldID}`, Object.fromEntries(formData), {
+        const response = await axios.patch(`https://mightyjaxx-dashboard.herokuapp.com/products/${oldID}`, Object.fromEntries(formData), {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -52,7 +52,7 @@ export const editProduct = createAsyncThunk('products/editProduct', async ({ old
 
 export const addProduct = createAsyncThunk('products/addProduct', async (formData: FormData, thunkApi) => {
     try {
-        const response = await axios.post(`http://localhost:5000/products`, Object.fromEntries(formData), {
+        const response = await axios.post(`https://mightyjaxx-dashboard.herokuapp.com/products`, Object.fromEntries(formData), {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -65,7 +65,7 @@ export const addProduct = createAsyncThunk('products/addProduct', async (formDat
 
 export const deleteProduct = createAsyncThunk('products/deleteProduct', async (id: number, thunkApi) => {
     try {
-        const response = await axios.delete(`http://localhost:5000/products/${id}`);
+        const response = await axios.delete(`https://mightyjaxx-dashboard.herokuapp.com/products/${id}`);
         return response.data;
     } catch (err: any) {
         return thunkApi.rejectWithValue(err.response);
