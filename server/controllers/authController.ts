@@ -35,7 +35,11 @@ export const login = async (req: Request, res: Response) => {
         expiresIn: "24h",
       }
     );
-    res.cookie("token", token, { httpOnly: true });
+    res.cookie("token", token, {
+      sameSite: "none",
+      secure: true,
+      httpOnly: true,
+    });
     res.status(200).json({ result: existingAdmin, token });
   } catch (err) {
     res.status(500).json(`Error: ${err}`);
@@ -69,7 +73,11 @@ export const signup = async (req: Request, res: Response) => {
         expiresIn: "24h",
       }
     );
-    res.cookie("token", token, { httpOnly: true });
+    res.cookie("token", token, {
+      sameSite: "none",
+      secure: true,
+      httpOnly: true,
+    });
     res.status(201).json({ result: newAdmin, token });
   } catch (err) {
     res.status(409).json(`Error: ${err}`);

@@ -163,7 +163,12 @@ export const deleteProduct = async (req: Request, res: Response) => {
       sku: id,
     })
       .then(async () => {
-        const productList: productInterface[] = await Product.find();
+        const productList: productInterface[] = await Product.find()
+          .sort({
+            _id: -1,
+          })
+          .limit(6)
+          .skip(0);
         res.status(201).json(productList);
       })
       .catch((err) => res.status(400).json(`Error: ${err}`));
